@@ -1,4 +1,4 @@
-package org.hyperledger.fabric.example;
+package org.hyperledger.fabric.example.HelloChaincode;
 
 import java.util.List;
 
@@ -14,13 +14,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class HelloJavaChaincode extends ChaincodeBase {
 
     private static final String MESSAGEKEYID = "msgKeyId123";
-    private static Log _logger = LogFactory.getLog(org.hyperledger.fabric.example.HelloJavaChaincode.class);
 
     @Override
     public Response init(ChaincodeStub stub) {
         try {
 
-            _logger.info("Init java simple chaincode");
             String func = stub.getFunction();
 
             if (!func.equals("init")) {
@@ -33,7 +31,6 @@ public class HelloJavaChaincode extends ChaincodeBase {
             // Initialize the chaincode
             String helloWorldMessage = args.get(0);
 
-            _logger.info(String.format("Hello World init string %s", helloWorldMessage));
             stub.putStringState(MESSAGEKEYID, helloWorldMessage);
 
             return newSuccessResponse();
@@ -45,7 +42,6 @@ public class HelloJavaChaincode extends ChaincodeBase {
     @Override
     public Response invoke(ChaincodeStub stub) {
         try {
-            _logger.info("Invoke java simple chaincode");
 
             // getting function name
             String func = stub.getFunction();
@@ -90,7 +86,7 @@ public class HelloJavaChaincode extends ChaincodeBase {
     }
 
     public static void main(String[] args) {
-        new org.hyperledger.fabric.example.HelloJavaChaincode().start(args);
+        new org.hyperledger.fabric.example.HelloChaincode.HelloJavaChaincode().start(args);
     }
 
 }
