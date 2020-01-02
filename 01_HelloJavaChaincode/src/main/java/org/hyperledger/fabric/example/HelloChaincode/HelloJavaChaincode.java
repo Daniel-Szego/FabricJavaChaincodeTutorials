@@ -25,9 +25,10 @@ public class HelloJavaChaincode extends ChaincodeBase {
                 return newErrorResponse("function other than init is not supported");
             }
             List<String> args = stub.getParameters();
-            if (args.size() != 0) {
+            if (args.size() != 1) {
                 newErrorResponse("Incorrect number of arguments. Expecting 1");
             }
+
             // Initialize the chaincode
             String helloWorldMessage = args.get(0);
 
@@ -56,7 +57,7 @@ public class HelloJavaChaincode extends ChaincodeBase {
                 return setHelloWorldMessage(stub, params);
             }
 
-            return newErrorResponse("Invalid invoke function name. Expecting one of: [\"invoke\", \"delete\", \"query\"]");
+            return newErrorResponse("Invalid invoke function name. Expecting one of: [\"getHelloWorld\", \"setHelloWorldMessage\"]");
         } catch (Throwable e) {
             return newErrorResponse(e);
         }
