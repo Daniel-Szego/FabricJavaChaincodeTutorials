@@ -3,4 +3,9 @@
 01_HelloJavaChaincode/.gradle/
 01_HelloJavaChaincode/.idea/
 01_HelloJavaChaincode/out/
+02_JavaChaincodeAsset/build/
+02_JavaChaincodeAsset/gradle/
+02_JavaChaincodeAsset/.gradle/
+02_JavaChaincodeAsset/.idea/
+02_JavaChaincodeAsset/out/
 
