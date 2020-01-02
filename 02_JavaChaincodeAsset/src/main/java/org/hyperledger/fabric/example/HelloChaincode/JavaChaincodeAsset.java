@@ -17,27 +17,6 @@ public class JavaChaincodeAsset extends ChaincodeBase {
 
     @Override
     public Response init(ChaincodeStub stub) {
-        try {
-
-            String func = stub.getFunction();
-
-            if (!func.equals("init")) {
-                return newErrorResponse("function other than init is not supported");
-            }
-            List<String> args = stub.getParameters();
-            if (args.size() != 1) {
-                newErrorResponse("Incorrect number of arguments. Expecting 1");
-            }
-
-            // Initialize the chaincode
-            String helloWorldMessage = args.get(0);
-
-            stub.putStringState(MESSAGEKEYID, helloWorldMessage);
-
-            return newSuccessResponse();
-        } catch (Throwable e) {
-            return newErrorResponse(e);
-        }
     }
 
     @Override
@@ -50,22 +29,22 @@ public class JavaChaincodeAsset extends ChaincodeBase {
             // getting function parameters
             List<String> params = stub.getParameters();
 
-            if (func.equals("getHelloWorld")) {
-                return getHelloWorld(stub, params);
+            if (func.equals("getHouse")) {
+                return getHouse(stub, params);
             }
-            if (func.equals("setHelloWorldMessage")) {
+            if (func.equals("setHouse")) {
                 return setHelloWorldMessage(stub, params);
             }
 
-            return newErrorResponse("Invalid invoke function name. Expecting one of: [\"getHelloWorld\", \"setHelloWorldMessage\"]");
+            return newErrorResponse("Invalid invoke function name. Expecting one of: [\"getHouse\", \"setHouse\"]");
         } catch (Throwable e) {
             return newErrorResponse(e);
         }
     }
 
-    private Response getHelloWorld(ChaincodeStub stub, List<String> args) {
-        if (args.size() != 0) {
-            return newErrorResponse("Incorrect number of arguments. Expecting 0");
+    private Response getHouse(ChaincodeStub stub, List<String> args) {
+        if (args.size() != 1) {
+            return newErrorResponse("Incorrect number of arguments. Expecting 1 the House Id");
         }
 
         String helloWorldMessage = stub.getStringState(MESSAGEKEYID);
@@ -73,7 +52,7 @@ public class JavaChaincodeAsset extends ChaincodeBase {
         return newSuccessResponse(helloWorldMessage, ByteString.copyFrom(helloWorldMessage, UTF_8).toByteArray());
     }
 
-    private Response setHelloWorldMessage(ChaincodeStub stub, List<String> args) {
+    private Response setHouse(ChaincodeStub stub, List<String> args) {
 
         if (args.size() != 1) {
             return newErrorResponse("Incorrect number of arguments. Expecting 1");
