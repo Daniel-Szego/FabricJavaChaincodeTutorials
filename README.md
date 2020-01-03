@@ -16,7 +16,8 @@ Chaincode examples for Java
    peer chaincode invoke -o orderer.example.com:7050 --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n mycc --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt -c '{"Args":["setHelloWorldMessage", "HalloWelt"]}'
 - query the changed hello world message
 
-2. JavaChaincodeAsset: admiistrating a house on the blockchain
+
+2. JavaChaincodeAsset: administrating a house on the blockchain
 
 - copy the gradle files and the scr files apart from test to the chaincode/02_JavaChaincodeAsset directory
 - start a Hyperledger Fabric network (like fabric-samples/basic-network): pay attention if the cli drive mappings are valid
@@ -35,6 +36,8 @@ Chaincode examples for Java
 - read the modfied house
    peer chaincode query -C mychannel -n mycc -c '{"Args":["getHouse","houseID123"]}'
 
+
+3. AssetWithAccess: administrating a house on the blockchain with access rights
 
 
 
