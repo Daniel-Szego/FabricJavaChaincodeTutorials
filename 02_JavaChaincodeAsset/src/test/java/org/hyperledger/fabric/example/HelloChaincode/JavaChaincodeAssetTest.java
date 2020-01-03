@@ -42,13 +42,30 @@ public class JavaChaincodeAssetTest {
     }
 
     @Test
-    public void testSetMessage() {
+    public void testSetHouse() {
         //given
 
         //given
         String functionName = "setHouse";
         given(chaincodeStub.getFunction()).willReturn(functionName);
         given(chaincodeStub.getParameters()).willReturn(Arrays.asList("houseID123","2","testCountry","testCity","testStreet","4"));
+
+        //when
+        Chaincode.Response result = helloJavaChaincode.invoke(chaincodeStub);
+
+        //then
+        assertThat(result.getStatusCode()).isEqualTo(200);
+    }
+
+    @Test
+    public void testBuildNewRoom() {
+        //given
+        given(chaincodeStub.getStringState("houseID123")).willReturn("{houseId:houseID123,nrOfRooms:2,addressCountry:demoSCountry,addressCity:demoCity,addressStreet:demoStreet,streetNr:22}");
+
+        //given
+        String functionName = "buildNewRoom";
+        given(chaincodeStub.getFunction()).willReturn(functionName);
+        given(chaincodeStub.getParameters()).willReturn(Arrays.asList("houseID123","4"));
 
         //when
         Chaincode.Response result = helloJavaChaincode.invoke(chaincodeStub);

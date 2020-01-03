@@ -37,6 +37,9 @@ public class JavaChaincodeAsset extends ChaincodeBase {
             if (func.equals("setHouse")) {
                 return setHouse(stub, params);
             }
+            if (func.equals("buildNewRoom")) {
+                return buildNewRoom(stub, params);
+            }
 
             return newErrorResponse("Invalid invoke function name. Expecting one of: [\"getHouse\", \"setHouse\"]");
         } catch (Throwable e) {
@@ -80,6 +83,23 @@ public class JavaChaincodeAsset extends ChaincodeBase {
         stub.putStringState(houseId,house.toJSON());
 
         return newSuccessResponse("House object has been succesfully saved", house.toJSON().getBytes());
+    }
+
+    private Response buildNewRoom(ChaincodeStub stub, List<String> args) {
+        if (args.size() != 2) {
+            return newErrorResponse("Incorrect number of arguments. Expecting 2 the House Id and the new number of rooms");
+        }
+
+        String houseId = args.get(0);
+        Integer newNumberOfRooms = Integer.parseInt(args.get(1));
+
+        String houseJSONString = stub.getStringState(houseId);
+        AssetHouse house = AssetHouse.createAssetHouse(houseJSONString);
+
+        house.nrOfRooms = newNumberOfRooms;
+        stub.putStringState(houseId,house.toJSON());
+
+        return newSuccessResponse("House : ", house.toJSON().toString().getBytes());
     }
 
     public static void main(String[] args) {
