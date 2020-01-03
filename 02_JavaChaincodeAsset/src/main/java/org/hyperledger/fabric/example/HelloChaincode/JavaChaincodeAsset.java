@@ -17,6 +17,8 @@ public class JavaChaincodeAsset extends ChaincodeBase {
 
     @Override
     public Response init(ChaincodeStub stub) {
+
+        return newSuccessResponse("Chaincode has been successfully initialized");
     }
 
     @Override
@@ -33,7 +35,7 @@ public class JavaChaincodeAsset extends ChaincodeBase {
                 return getHouse(stub, params);
             }
             if (func.equals("setHouse")) {
-                return setHelloWorldMessage(stub, params);
+                return setHouse(stub, params);
             }
 
             return newErrorResponse("Invalid invoke function name. Expecting one of: [\"getHouse\", \"setHouse\"]");
@@ -47,22 +49,37 @@ public class JavaChaincodeAsset extends ChaincodeBase {
             return newErrorResponse("Incorrect number of arguments. Expecting 1 the House Id");
         }
 
-        String helloWorldMessage = stub.getStringState(MESSAGEKEYID);
+        String houseId = args.get(0);
+        String houseJSONString = stub.getStringState(houseId);
+        AssetHouse house = AssetHouse.createAssetHouse(houseJSONString);
 
-        return newSuccessResponse(helloWorldMessage, ByteString.copyFrom(helloWorldMessage, UTF_8).toByteArray());
+        return newSuccessResponse("House : ", house.toJSON().toString().getBytes());
     }
 
     private Response setHouse(ChaincodeStub stub, List<String> args) {
 
-        if (args.size() != 1) {
-            return newErrorResponse("Incorrect number of arguments. Expecting 1");
+        if (args.size() != 6) {
+            return newErrorResponse("Incorrect number of arguments. Expecting 6");
         }
 
-        String newMessage = args.get(0);
+        String houseId = args.get(0);
+        Integer nrOfRooms = Integer.parseInt(args.get(1));
+        String addressCountry = args.get(2);
+        String addressCity = args.get(3);
+        String addressStreet = args.get(4);
+        Integer streetNr = Integer.parseInt(args.get(5));
 
-        stub.putStringState(MESSAGEKEYID, newMessage);
+        AssetHouse house = new AssetHouse();
+        house.houseId = houseId;
+        house.nrOfRooms = nrOfRooms;
+        house.addressCountry = addressCountry;
+        house.addressCity = addressCity;
+        house.addressStreet = addressStreet;
+        house.streetNr = streetNr;
 
-        return newSuccessResponse("Hello World message sucessfully set", newMessage.getBytes());
+        stub.putStringState(houseId,house.toJSON());
+
+        return newSuccessResponse("House object has been succesfully saved", house.toJSON().getBytes());
     }
 
     public static void main(String[] args) {

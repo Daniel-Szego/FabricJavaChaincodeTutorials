@@ -13,9 +13,13 @@ public class AssetHouse {
     public String addressStreet;
     public Integer streetNr;
 
+    public String toJSON () {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
     // factory function
     public static AssetHouse createAssetHouse(String houseString) {
-
        Gson gson = new Gson();
        AssetHouse act = gson.fromJson(houseString, AssetHouse.class);
 

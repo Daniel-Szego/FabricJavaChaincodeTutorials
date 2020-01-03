@@ -21,12 +21,13 @@ public class JavaChaincodeAssetTest {
     private JavaChaincodeAsset helloJavaChaincode = new JavaChaincodeAsset();
 
     @Test
-    public void testGetMessage() {
+    public void testGetHouse() {
         //given
-        given(chaincodeStub.getStringState("msgKeyId123")).willReturn("Hello World !");
+        given(chaincodeStub.getStringState("houseID123")).willReturn("{houseId:houseID123,nrOfRooms:2,addressCountry:demoSCountry,addressCity:demoCity,addressStreet:demoStreet,streetNr:22}");
 
         //given
-        String functionName = "getHelloWorld";
+        String functionName = "getHouse";
+        given(chaincodeStub.getParameters()).willReturn(Arrays.asList("houseID123"));
         given(chaincodeStub.getFunction()).willReturn(functionName);
 
         //when
@@ -34,18 +35,20 @@ public class JavaChaincodeAssetTest {
 
         //then
         assertThat(result.getStatusCode()).isEqualTo(200);
-        assertThat(result.getStringPayload()).contains("Hello World ");
+        assertThat(result.getStringPayload()).contains("houseID123");
+        assertThat(result.getStringPayload()).contains("demoCity");
+        assertThat(result.getStringPayload()).contains("demoSCountry");
+        assertThat(result.getStringPayload()).contains("demoStreet");
     }
 
     @Test
     public void testSetMessage() {
         //given
-        given(chaincodeStub.getStringState("msgKeyId123")).willReturn("Hello World !");
 
         //given
-        String functionName = "setHelloWorldMessage";
+        String functionName = "setHouse";
         given(chaincodeStub.getFunction()).willReturn(functionName);
-        given(chaincodeStub.getParameters()).willReturn(Arrays.asList("Hallo Welt"));
+        given(chaincodeStub.getParameters()).willReturn(Arrays.asList("houseID123","2","testCountry","testCity","testStreet","4"));
 
         //when
         Chaincode.Response result = helloJavaChaincode.invoke(chaincodeStub);
