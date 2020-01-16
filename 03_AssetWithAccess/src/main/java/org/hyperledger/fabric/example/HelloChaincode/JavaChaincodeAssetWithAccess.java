@@ -1,15 +1,14 @@
 package org.hyperledger.fabric.example.HelloChaincode;
 
+import java.io.IOException;
+import java.security.cert.CertificateException;
 import java.util.List;
 
-import com.google.protobuf.ByteString;
-import io.netty.handler.ssl.OpenSsl;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.hyperledger.fabric.contract.ClientIdentity;
 import org.hyperledger.fabric.shim.ChaincodeBase;
 import org.hyperledger.fabric.shim.ChaincodeStub;
+import org.json.JSONException;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class JavaChaincodeAssetWithAccess extends ChaincodeBase {
 
@@ -47,16 +46,36 @@ public class JavaChaincodeAssetWithAccess extends ChaincodeBase {
         }
     }
 
+    protected boolean isUserInRole(ChaincodeStub stub, String role) {
+       try {
+
+           ClientIdentity ident = new ClientIdentity(stub);
+           return ident.assertAttributeValue("AppRole", role);
+
+       } catch (IOException | CertificateException ex) {
+           ex.printStackTrace();
+           return false;
+       }
+    }
+
     private Response getHouse(ChaincodeStub stub, List<String> args) {
         if (args.size() != 1) {
             return newErrorResponse("Incorrect number of arguments. Expecting 1 the House Id");
         }
+        if (isUserInRole(stub, AppRoleEnum.VISITOR.toString()) ||
+                isUserInRole(stub, AppRoleEnum.BUYER.toString()) ||
+                isUserInRole(stub, AppRoleEnum.OWNER.toString()) ||
+                isUserInRole(stub, AppRoleEnum.BUILDER.toString())) {
 
-        String houseId = args.get(0);
-        String houseJSONString = stub.getStringState(houseId);
-        AssetHouse house = AssetHouse.createAssetHouse(houseJSONString);
+            String houseId = args.get(0);
+            String houseJSONString = stub.getStringState(houseId);
+            AssetHouse house = AssetHouse.createAssetHouse(houseJSONString);
 
-        return newSuccessResponse("House : ", house.toJSON().toString().getBytes());
+            return newSuccessResponse("House : ", house.toJSON().toString().getBytes());
+        }
+        else {
+            return newErrorResponse("Invalid access for the resouce");
+        }
     }
 
     private Response setHouse(ChaincodeStub stub, List<String> args) {
@@ -80,9 +99,14 @@ public class JavaChaincodeAssetWithAccess extends ChaincodeBase {
         house.addressStreet = addressStreet;
         house.streetNr = streetNr;
 
-        stub.putStringState(houseId,house.toJSON());
+        if (isUserInRole(stub, AppRoleEnum.OWNER.toString())) {
 
-        return newSuccessResponse("House object has been succesfully saved", house.toJSON().getBytes());
+            stub.putStringState(houseId, house.toJSON());
+            return newSuccessResponse("House object has been succesfully saved", house.toJSON().getBytes());
+        } else {
+            return newErrorResponse("Invalid access for the resouce: only owner has access to setHouse");
+        }
+
     }
 
     private Response buildNewRoom(ChaincodeStub stub, List<String> args) {
@@ -93,13 +117,19 @@ public class JavaChaincodeAssetWithAccess extends ChaincodeBase {
         String houseId = args.get(0);
         Integer newNumberOfRooms = Integer.parseInt(args.get(1));
 
-        String houseJSONString = stub.getStringState(houseId);
-        AssetHouse house = AssetHouse.createAssetHouse(houseJSONString);
+        if (isUserInRole(stub, AppRoleEnum.BUILDER.toString())) {
 
-        house.nrOfRooms = newNumberOfRooms;
-        stub.putStringState(houseId,house.toJSON());
 
-        return newSuccessResponse("House : ", house.toJSON().toString().getBytes());
+            String houseJSONString = stub.getStringState(houseId);
+            AssetHouse house = AssetHouse.createAssetHouse(houseJSONString);
+
+            house.nrOfRooms = newNumberOfRooms;
+            stub.putStringState(houseId, house.toJSON());
+
+            return newSuccessResponse("House : ", house.toJSON().toString().getBytes());
+        } else {
+            return newErrorResponse("Invalid access for the resouce: only builder has access to buildNewRoom");
+        }
     }
 
     public static void main(String[] args) {
