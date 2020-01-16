@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.hyperledger.fabric.example.HelloChaincode.JavaChaincodeAssetWithAccessTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2020-01-03T21:40:38" hostname="dsz-Inspiron-3580" time="0.071">
+  <properties/>
+  <testcase name="testGetHouse" classname="org.hyperledger.fabric.example.HelloChaincode.JavaChaincodeAssetWithAccessTest" time="0.067"/>
+  <testcase name="testBuildNewRoom" classname="org.hyperledger.fabric.example.HelloChaincode.JavaChaincodeAssetWithAccessTest" time="0.002"/>
+  <testcase name="testSetHouse" classname="org.hyperledger.fabric.example.HelloChaincode.JavaChaincodeAssetWithAccessTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
